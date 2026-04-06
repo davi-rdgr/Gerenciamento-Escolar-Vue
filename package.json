@@ -1,16 +1,18 @@
 {
-  "name": "latest",
+  "name": "sistema-de-integracao-escolar",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "pinia": "^3.0.4",
     "vue": "^3.2.13",
-    "vue-router": "^4.0.3"
+    "vue-router": "^4.0.3",
+    "vuetify": "^4.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",
@@ -23,19 +25,20 @@
     "eslint-plugin-vue": "^8.0.3"
   },
   "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {}
+  "root": true,
+  "env": {
+    "node": true,
+    "vue/setup-compiler-macros": true
   },
+  "extends": [
+    "plugin:vue/vue3-essential",
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "parser": "@babel/eslint-parser"
+  },
+  "rules": {}
+},
   "browserslist": [
     "> 1%",
     "last 2 versions",
