@@ -24,7 +24,27 @@ export const registerComponent = (app) => {
         defineAsyncComponent(() => import('./components/StudentNotes.vue'))
     )
     app.component(
+        'home-student-component',
+        defineAsyncComponent(() => import('./components/HomeStudentComponent.vue'))
+    )
+    app.component(
+        'home-professor-component',
+        defineAsyncComponent(() => import('./components/HomeProfessorComponent.vue'))
+    )
+    app.component(
+        'home-admin-component',
+        defineAsyncComponent(() => import('./components/HomeAdminComponent.vue'))
+    )
+
+    app.component(
+        'options-card-component',
+        defineAsyncComponent(() => import('./components/OptionsCardComponent.vue'))
+    )
+
+    app.component(
         'professor-classes-component',
         defineAsyncComponent(() => import('./components/ProfessorClasses.vue'))
     )
+
+
 }
