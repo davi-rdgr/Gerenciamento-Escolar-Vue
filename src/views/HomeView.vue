@@ -8,7 +8,7 @@ const auth = useAuthStore();
     <main>
         <div class="max-width-content">
             <home-student-component
-                 v-if="auth.user?.role == 'student'" 
+                v-if="auth.user?.role == 'student'" 
             />
             <home-professor-component 
                 v-if="auth.user?.role == 'professor'" 

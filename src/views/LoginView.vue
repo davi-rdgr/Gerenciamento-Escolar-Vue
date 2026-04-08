@@ -134,6 +134,8 @@ h1 {
 .form .input:deep(.v-field__input) {
     height: 44px;
     min-height: auto;
+    padding: 0;
+    
 }
 
 .form .input:deep(.v-field__field) {

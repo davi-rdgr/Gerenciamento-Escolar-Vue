@@ -9,9 +9,6 @@ const btnText = ref('Confirmar');
 const dialogType = ref('neutral');
 const dialogOptions = ref(true);
 
-const email = "davirdgrsouza@gmail.com";
-const studantClass = "Turma 2026 / 2";
-
 const logout = () => {
     router.push('/')
 }
@@ -31,7 +28,7 @@ const auth = useAuthStore();
                     {{ auth.user?.name }}
                 </span>
                 <span>
-                    {{ email }} {{ studantClass || '' }}
+                    {{ auth.user?.email }}
                 </span>
             </div>
             <dialog-component 

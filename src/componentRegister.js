@@ -20,10 +20,6 @@ export const registerComponent = (app) => {
 
     //components
     app.component(
-        'student-notes-component',
-        defineAsyncComponent(() => import('./components/StudentNotes.vue'))
-    )
-    app.component(
         'home-student-component',
         defineAsyncComponent(() => import('./components/HomeStudentComponent.vue'))
     )
@@ -41,10 +37,17 @@ export const registerComponent = (app) => {
         defineAsyncComponent(() => import('./components/OptionsCardComponent.vue'))
     )
 
+    //popups
+    app.component(
+        'student-notes-component',
+        defineAsyncComponent(() => import('./components/popups/StudentNotes.vue'))
+    )
     app.component(
         'professor-classes-component',
-        defineAsyncComponent(() => import('./components/ProfessorClasses.vue'))
+        defineAsyncComponent(() => import('./components/popups/ProfessorClasses.vue'))
     )
-
-
+    app.component(
+        'professor-add-notes-component',
+        defineAsyncComponent(() => import('./components/popups/ProfessorAddNotes.vue'))
+    )
 }
