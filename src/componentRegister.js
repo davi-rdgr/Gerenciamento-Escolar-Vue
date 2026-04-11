@@ -54,4 +54,8 @@ export const registerComponent = (app) => {
         'professor-edit-notes-component',
         defineAsyncComponent(() => import('./components/popups/ProfessorEditNotes.vue'))
     )
+    app.component(
+        'admin-add-student-component',
+        defineAsyncComponent(() => import('./components/popups/AdminAddStudent.vue'))
+    )
 }

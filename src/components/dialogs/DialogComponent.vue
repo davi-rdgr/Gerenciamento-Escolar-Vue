@@ -1,27 +1,19 @@
 <script setup>
-import { computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 const props = defineProps([
     "title",
     "subtitle",
     "btnText",
     "dialogType",
     "dialogOptions",
-    "activatorText",  // texto do botão interno, se houver
-    "modelValue"      // controle externo
+    "modelValue"
 ])
+
 const emits = defineEmits([
     "actionBtn",
     "update:modelValue"
 ])
 
-
-watchEffect(() => {
-    console.log('activatorText:', props.activatorText)
-    console.log('modelValue:', props.modelValue)
-    console.log('dialogType:', props.dialogType)
-})
-
-//dialogType
 const typeStyles = computed(() => {
     const map = {
         success: { color: '#7BE88C', border: '1px solid #7BE88C' },
@@ -32,9 +24,10 @@ const typeStyles = computed(() => {
     return map[props.dialogType] ?? map['neutral'];
 })
 
-const logout = () => {
+const emitEvent = () => {
     emits('actionBtn')
 }
+
 const closeModal = (isActive) => {
     isActive.value = false;
 }
@@ -42,23 +35,39 @@ const closeModal = (isActive) => {
 </script>
 
 <template>
-    <v-dialog class="v-dialog" max-width="356">
-        <template v-if="props.activatorText" v-slot:activator="{ props: activatorProps }">
-            <v-btn class="btn-logout" v-bind="activatorProps" :text="props.activatorText" variant="text" />
-        </template>
+    <v-dialog 
+        :model-value="props.modelValue"
+        @update:model-value="emits('update:modelValue', $event)"
+        class="v-dialog" 
+        max-width="356">
         <template v-slot:default="{ isActive }">
-            <v-card :style="{ '--type-color': typeStyles.color }" class="v-title" :title="props.title">
+            <v-card 
+                :style="{ '--type-color': typeStyles.color }" 
+                class="v-title" 
+                :title="props.title">
                 <v-card-text class="v-subtitle">
                     {{ props.subtitle }}
                 </v-card-text>
                 <v-card-actions class="btn-content" v-if="props.dialogOptions">
-                    <v-btn class="btn btn-back" text="Voltar" @click="closeModal(isActive)">
+                    <v-btn 
+                        class="btn btn-back" 
+                        text="Voltar" 
+                        @click="closeModal(isActive)"
+                    >
                     </v-btn>
-                    <v-btn class="btn" :text="props.btnText" @click="logout">
+                    <v-btn 
+                        class="btn" 
+                        :text="props.btnText" 
+                        @click="emitEvent"
+                    >
                     </v-btn>
                 </v-card-actions>
                 <v-card-actions class="btn-content" v-else>
-                    <v-btn class="btn" :text="props.btnText" @click="logout">
+                    <v-btn 
+                        class="btn" 
+                        :text="props.btnText" 
+                        @click="emitEvent"
+                    >
                     </v-btn>
                 </v-card-actions>
             </v-card>

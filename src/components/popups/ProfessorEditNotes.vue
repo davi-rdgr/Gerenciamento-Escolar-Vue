@@ -13,7 +13,7 @@ const emits = defineEmits([
     "update:modelValue",
     "updateClasses"
 ])
-const localClasses = ref(JSON.parse(JSON.stringify(props.classes)));
+const localClasses = ref(JSON.parse(JSON.stringify(props.classes || [])))
 
 const notesRules = {
     required: v => !!v || '',

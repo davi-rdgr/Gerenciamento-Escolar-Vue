@@ -3,6 +3,8 @@ import { useAuthStore } from '@/stores/authStore';
 import router from '@/router';
 import { ref } from 'vue';
 
+const logoutOpen = ref(false)
+
 const title = ref('SAIR');
 const subtitle = ref('Deseja realmente encerrar a sessão?');
 const btnText = ref('Confirmar');
@@ -13,6 +15,9 @@ const logout = () => {
     router.push('/')
 }
 
+const openModal = () => {
+    logoutOpen.value = true;
+}
 
 const auth = useAuthStore();
 </script>
@@ -31,24 +36,30 @@ const auth = useAuthStore();
                     {{ auth.user?.email }}
                 </span>
             </div>
-            <dialog-component 
-                class="dialog-logout"
-                :title="title" 
-                :subtitle="subtitle" 
-                :btnText="btnText" 
-                :dialogType="dialogType"
-                :dialogOptions="dialogOptions" 
-                activatorText="Logout" 
-                @actionBtn="logout" 
-            />
+            <v-btn 
+                class="logout-btn"
+                @click="openModal">
+                Logout
+            </v-btn>
         </div>
     </header>
     <slot></slot>
+    <dialog-component 
+        class="dialog-logout"
+        v-model="logoutOpen"
+        :title="title" 
+        :subtitle="subtitle" 
+        :btnText="btnText" 
+        :dialogType="dialogType"
+        :dialogOptions="dialogOptions" 
+        @actionBtn="logout" 
+    />
 </template>
 
 <style scoped>
 .standart-layout {
-    margin: 41px 80px 30px 80px;
+    padding: 41px 80px 30px 80px;
+    background-color: #1a1a1a;
 }
 
 .standart-layout h1 {
@@ -57,6 +68,7 @@ const auth = useAuthStore();
     font-family: 'Inter', sans-serif;
     color: #ffffff;
     text-align: center;
+    margin: 0;
 }
 
 .standart-layout .user-info {
@@ -87,7 +99,10 @@ const auth = useAuthStore();
     color: #ffffff;
 }
 
-.standart-layout .user-info .dialog-logout {
+.standart-layout .user-info .logout-btn {
     font-size: 20px;
+    background-color: #1a1a1a;
+    border: none;
+    box-shadow: none;
 }
 </style>
