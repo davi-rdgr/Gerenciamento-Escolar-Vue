@@ -1,15 +1,43 @@
 <script setup>
+import { ref, computed } from 'vue';
+
 const props = defineProps([
-    "notes",
-    "modelValue"
+    "modelValue",
+    "classIndex",
+    "classes",
+    "professorSubjects",
+    "className"
 ])
 
 const emits = defineEmits([
-    "update:modelValue"
+    "update:modelValue",
+    "updateClasses"
 ])
+const localClasses = ref(JSON.parse(JSON.stringify(props.classes)));
+
+const notesRules = {
+    required: v => !!v || '',
+    decimal: v => /^\d+(\.\d{1})?$/.test(v) || ''
+}
+
+const hasError = computed(() => {
+    return localClasses.value[props.classIndex].students.some(student =>
+        student.grid.some(note => 
+            note.nota === 0 || 
+            note.nota === '' || 
+            note.nota === null ||
+            notesRules.decimal(note.nota) !== true
+        )
+    )
+})
 
 const closeModal = (isActive) => {
     isActive.value = false;
+}
+
+const saveNotes = (isActive) => {
+    //emits('updateClasses', localClasses.value)
+    closeModal(isActive)
 }
 </script>
 
@@ -29,12 +57,15 @@ const closeModal = (isActive) => {
         <template v-slot:default="{ isActive }">
             <v-card 
                 class="v-title" 
-                title="Minha turma -">
+                :title="'Minha turma - ' + props.className ">
                 <v-table class="v-table">
                     <thead>
                         <tr>
                             <th>
-                                Disciplina
+                                ID
+                            </th>
+                            <th>
+                                Aluno
                             </th>
                             <th>
                                 Nota
@@ -42,10 +73,25 @@ const closeModal = (isActive) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(note, index) in props.notes" :key="index">
-                            <td>{{ note.disciplina }}</td>
-                            <td>{{ note.nota }}</td>
-                        </tr>
+                        <template v-for="(student, index) in localClasses[props.classIndex].students" :key="index">
+                            <tr v-for="(note, noteIndex) in student.grid" :key="noteIndex">
+                                <td>{{ student.name }}</td>
+                                <td>{{ note.disciplina }}</td>
+                                <td>
+                                    <v-text-field
+                                        class="input-note"
+                                        type="number"
+                                        v-model="note.nota"
+                                        step="0.1"
+                                        :rules="[
+                                            notesRules.required, 
+                                            notesRules.decimal
+                                        ]"
+                                        @input="note.nota = Math.min(10, Math.max(0, Number(note.nota)))"
+                                    />
+                                </td>
+                            </tr>
+                        </template>
                     </tbody>
                 </v-table>
                 <v-card-actions class="btn-content">
@@ -53,6 +99,13 @@ const closeModal = (isActive) => {
                         class="btn" 
                         text="Voltar" 
                         @click="closeModal(isActive)">
+                    </v-btn>
+                    <v-btn 
+                        class="btn btn-save" 
+                        text="Salvar" 
+                        :disabled="hasError"
+                        @click="saveNotes(isActive)"
+                    >
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -121,12 +174,6 @@ const closeModal = (isActive) => {
     padding-left: 15px;
 }
 
-.v-dialog :deep(th:last-child),
-.v-dialog :deep(td:last-child) {
-    text-align: right;
-    padding-right: 15px;
-}
-
 .v-dialog:deep(th) {
     background-color: #D9D9D9;
 }
@@ -137,6 +184,30 @@ const closeModal = (isActive) => {
 
 .v-dialog:deep(tr:nth-child(even)) {
     background-color: #D9D9D9;
+}
+
+.v-dialog .input-note {
+    background-color: #ffffff;
+    border: none;
+    color: #1a1a1a;
+    text-align: right;
+    width: 40px;
+    padding: 0;
+    height: 28px;
+}
+
+.v-dialog .input-note:deep(.v-field__input) {
+    padding: 0;
+    min-height: auto;
+    height: 27px;
+}
+
+.v-dialog .input-note:deep(.v-input__details){
+    display: none;
+}
+
+.v-dialog .input-note:deep(v-dialog[data-v-27104b30] td:last-child) {
+    padding: 0;   
 }
 
 .v-dialog .btn-content .btn {
@@ -151,9 +222,9 @@ const closeModal = (isActive) => {
     border-radius: 10px;
 }
 
-.v-dialog .btn-content .btn-back {
-    background-color: #D9D9D9 !important;
-    color: #6D6D6D !important;
+.v-dialog .btn-content .btn-save {
+    background-color: #00C174 !important;
+    color: #F6F6F6 !important;
 }
 
 .btn-extra {

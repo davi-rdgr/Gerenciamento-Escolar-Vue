@@ -2,32 +2,20 @@
 import { ref, computed } from 'vue';
 
 const props = defineProps([
+    "modelValue",
+    "classIndex",
     "classes",
-    "btnText",
-    "selectedClass",
-    "modelValue"
+    "professorSubjects"
 ])
 
 const emits = defineEmits([
     "update:modelValue",
-    "selectClass",
 ])
 
 const student = ref('');
 const subject = ref('');
 const notes = ref('');
 const touched = ref(false);
-
-const students = [
-    {id: 1, name: 'Jonatham Osterman'},
-    {id: 2, name: 'Walter Joseph Kovacs'},
-    {id: 3, name: 'Jonn Jonzz'}
-]   
-const subjects = [
-    {id: 1, name: 'Matemática'},
-    {id: 2, name: 'Português'},
-    {id: 3, name: 'História'}
-]
 
 const notesRules = {
     required: v => !!v || 'Campo obrigatório',
@@ -77,7 +65,7 @@ const closeModal = (isActive) => {
                     <v-select 
                         class="input arrow" 
                         id="student" 
-                        :items="students"
+                        :items="props.classes[props.classIndex].students"
                         item-title="name" 
                         item-value="id" 
                         v-model="student" 
@@ -90,7 +78,7 @@ const closeModal = (isActive) => {
                     <v-select 
                         class="input arrow" 
                         id="subject" 
-                        :items="subjects"
+                        :items="props.professorSubjects"
                         item-title="name"
                         item-value="id" 
                         v-model="subject" 
@@ -182,6 +170,7 @@ const closeModal = (isActive) => {
     font-weight: 500;
     font-family: 'Inter', sans-serif;
     color: #1a1a1a;
+    margin: 10px 0 0 0;
 }
 
 .v-dialog .inputs-content .input {

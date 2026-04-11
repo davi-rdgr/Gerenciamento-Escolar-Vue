@@ -8,7 +8,6 @@ const student = [{
 }];
 
 const dialogOpen = ref(false);
-const title = ref("Minha turma - 2026 / 2");
 const notes = [
     { disciplina: 'Matemática', nota: 9.6 },
     { disciplina: 'Português', nota: 4.9 },
@@ -17,8 +16,6 @@ const notes = [
     { disciplina: 'Ed. Física', nota: 4.5 },
     { disciplina: 'Química', nota: 3.6 },
 ]
-const btnText = ref("Voltar");
-const dialogOptions = ref(false);
 
 </script>
 
@@ -27,10 +24,7 @@ const dialogOptions = ref(false);
         :content="student" 
     />
     <student-notes-component
-        :title="title"
         :notes="notes"
-        :dialogOptions="dialogOptions" 
-        :btnText="btnText"
         v-model="dialogOpen"
     />
 </template>

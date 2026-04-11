@@ -1,16 +1,49 @@
 <script setup>
+import { ref } from 'vue';
+
 const props = defineProps([
     "classes",
     "dialogOptions",
     "btnText",
     "selectedClass",
+    "classIndex",
+    "className",
     "modelValue"
 ])
 
 const emits = defineEmits([
     "update:modelValue",
     "selectClass",
+    "className"
 ])
+
+const addNotesOpen = ref(false);
+const editNotesOpen = ref(false);
+
+const professorSubjects = [
+    {
+        id: 1,
+        name: "Matemática"
+    }
+]
+
+const professorSubjectNames = professorSubjects.map(s => s.name)
+
+const professorClasses = props.classes.map(turma => ({
+    ...turma,
+    students: turma.students
+        .filter(student =>
+            student.grid.some(note => 
+                professorSubjectNames.includes(note.disciplina)
+            )
+        )
+        .map(student => ({
+            ...student,
+            grid: student.grid.filter(note => 
+                professorSubjectNames.includes(note.disciplina)
+            )
+        }))
+}))
 
 const closeModal = (isActive) => {
     isActive.value = false;
@@ -37,6 +70,7 @@ const closeModal = (isActive) => {
                 <div class="actions-content">
                     <v-btn 
                         class="btn"
+                        @click="addNotesOpen = true"
                         :class="!props.selectedClass ? 'disabled-btn' : ''"
                         :disabled="!props.selectedClass"
                     >
@@ -44,6 +78,7 @@ const closeModal = (isActive) => {
                     </v-btn>
                     <v-btn 
                         class="btn"
+                        @click="editNotesOpen = true"
                         :class="!props.selectedClass ? 'disabled-btn' : ''"
                         :disabled="!props.selectedClass"
                         >
@@ -65,7 +100,7 @@ const closeModal = (isActive) => {
                         <tr 
                             v-for="(classes, index) in props.classes" 
                                 :key="index"
-                                @click="emits('selectClass', classes.id)"
+                                @click="emits('selectClass', classes.id, index, classes.turma)"
                                 :class="classes.id == props.selectedClass ? 'selected-class' : ''"
                             >
                                 <td>{{ classes.id }}</td>
@@ -95,6 +130,19 @@ const closeModal = (isActive) => {
             </v-card>
         </template>
     </v-dialog>
+    <professor-add-notes-component
+        v-model="addNotesOpen"
+        :classIndex="props.classIndex"
+        :classes="props.classes"
+        :professorSubjects="professorSubjects"
+    />
+    <professor-edit-notes-component 
+        v-model="editNotesOpen"
+        :classIndex="props.classIndex"
+        :classes="professorClasses"
+        :professorSubjects="professorSubjects"
+        :className="props.className"
+    />    
 </template>
 
 <style scoped>

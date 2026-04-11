@@ -8,27 +8,119 @@ const professor = [{
 }];
 
 const dialogOpen = ref(false);
-/* const addOpen = ref(false); */
-/* const openAddComponent = (status) => {
-    addOpen.value = status;
-}; */
-
+const classIndex = ref();
 const classes = [
-    { id: '1', turma: '7° ano C 2026' },
-    { id: '2', turma: '7° ano B 2026'},
-    { id: '3', turma: '5° ano C 2026'},
-    { id: '4', turma: '3° ano A 2026'},
-    { id: '5', turma: '7° ano D 2026'},
-    { id: '6', turma: '4° ano A 2026'},
+    { 
+        id: '1', 
+        turma: '7° ano C 2026',
+        students: [
+            {
+                id: 1,
+                name: 'Clark Kent',
+                grid: [
+                    { disciplina: 'Matemática', nota: 9.5 },
+                    { disciplina: 'História', nota: 6.2 },
+                    { disciplina: 'Português', nota: 2.5 },
+                ]
+            },
+            {
+                id: 2,
+                name: 'Wally West',
+                grid: [
+                    { disciplina: 'Matemática', nota: 9.5 },
+                    { disciplina: 'História', nota: 6.2 },
+                    { disciplina: 'Português', nota: 2.5 },
+                ]
+            },
+            {
+                id: 3,
+                name: 'Diana',
+                grid: [
+                    { disciplina: 'Matemática', nota: 9.5 },
+                    { disciplina: 'História', nota: 6.2 },
+                    { disciplina: 'Português', nota: 2.5 },
+                ]
+            },
+        ]
+    },
+    { 
+        id: '2', 
+        turma: '7° ano B 2026',
+        students: [
+            {
+                id: 4,
+                name: 'Antony Stark',
+                grid: [
+                    { disciplina: 'Matemática', nota: 9.5 },
+                    { disciplina: 'História', nota: 6.2 },
+                    { disciplina: 'Português', nota: 2.5 },
+                ]
+            },
+            {
+                id: 5,
+                name: 'Bruce Banner',
+                grid: [
+                    { disciplina: 'Matemática', nota: 9.5 },
+                    { disciplina: 'História', nota: 6.2 },
+                    { disciplina: 'Português', nota: 2.5 },
+                ]
+            },
+            {
+                id: 6,
+                name: 'Steven Rogers',
+                grid: [
+                    { disciplina: 'Matemática', nota: 9.5 },
+                    { disciplina: 'História', nota: 6.2 },
+                    { disciplina: 'Português', nota: 2.5 },
+                ]
+            }
+        ]
+    },
+    { 
+        id: '3', 
+        turma: '5° ano C 2026',
+        students: [
+            {
+                id: 7,
+                name: 'Gwen Stacy',
+                grid: [
+                    { disciplina: 'Matemática', nota: 9.5 },
+                    { disciplina: 'História', nota: 6.2 },
+                    { disciplina: 'Português', nota: 2.5 },
+                ]
+            },
+            {
+                id: 8,
+                name: 'Peter Parker',
+                grid: [
+                    { disciplina: 'Matemática', nota: 9.5 },
+                    { disciplina: 'História', nota: 6.2 },
+                    { disciplina: 'Português', nota: 2.5 },
+                ]
+            },
+            {
+                id: 9,
+                name: 'Maryjane Watson',
+                grid: [
+                    { disciplina: 'Matemática', nota: 9.5 },
+                    { disciplina: 'História', nota: 6.2 },
+                    { disciplina: 'Português', nota: 2.5 },
+                ]
+            }
+        ]
+    },
 ]
+
 const btnText = ref("Voltar");
 const dialogOptions = ref(false);
-
 const selectedClass = ref('');
-const selectClass = (id) => {
-    selectedClass.value = id;
-}
+const className = ref('');
 
+const selectClass = (id, index, selectedClassName) => {
+    selectedClass.value = id;
+    classIndex.value = index;
+    className.value = selectedClassName
+}
 
 </script>
 
@@ -41,16 +133,11 @@ const selectClass = (id) => {
         :dialogOptions="dialogOptions"
         :btnText="btnText"
         :selectedClass="selectedClass"
+        :classIndex="classIndex"
+        :className="className"
         v-model="dialogOpen"
         @selectClass="selectClass"
     />
-    <!-- <professor-add-notes-component
-        :classes="classes"
-        :dialogOptions="dialogOptions"
-        :btnText="btnText"
-        :selectedClass="selectedClass"
-        v-model="dialogOpen"
-        @selectClass="selectClass"
-    /> -->
+
 </template>
 
