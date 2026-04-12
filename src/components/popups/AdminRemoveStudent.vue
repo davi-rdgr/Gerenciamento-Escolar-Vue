@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps([
     "modelValue",
@@ -11,30 +11,79 @@ const emits = defineEmits([
 
 const feedbackOpen = ref(false)
 const dialogStatus = ref(null);
-const menu = ref(false)
 
-const studentInfo = ref({
-    name: '',
-    email: '',
-    cpf: '',
-    born: '',
-    bornFormatted: '',
-    login: '',
-    password: '',
-    class: '',
-})
+const searchClass = ref(null);
+const filteredClass = ref('');
+const studentRow = ref('');
+
+const classes = [
+    { 
+        id: 1,
+        name: '7° ano B 2026',
+        students: [
+            { 
+                id: 1, 
+                name: 'Remus Lupin' 
+            },
+            { 
+                id: 2, 
+                name: 'João Carlos' 
+            },
+            { 
+                id: 3, 
+                name: 'Manuela Santos' 
+            },
+        ]
+    },
+    {
+        id: 2,
+        name: '3° ano C 2026',
+        students: [
+            { 
+                id: 4, 
+                name: 'Thiago Potter' 
+            },
+            { 
+                id: 5, 
+                name: 'Ana Júlia' 
+            },
+            { 
+                id: 6, 
+                name: 'Hermione Granger' 
+            },
+        ]
+    },
+    {
+        id: 3,
+        name: '4° ano A 2026',
+        students: [
+            { 
+                id: 7, 
+                name: 'Tom Riddle' 
+            },
+            { 
+                id: 8, 
+                name: 'Dumbledoor' 
+            },
+            { 
+                id: 9, 
+                name: 'Aragorn Telcontar' 
+            },
+        ]
+    }
+]
 
 const statusConfig = {
     true: {
         title: 'SUCESSO!!!',
-        subtitle: 'Aluno adicionado com sucesso!',
+        subtitle: 'Aluno removido com sucesso!',
         btnText: 'Confirmar',
         dialogType: 'success',
         dialogOptions: false,
     },
     false: {
         title: 'ERRO!!!',
-        subtitle: 'Erro ao adicionar aluno. Tente novamente!',
+        subtitle: 'Erro ao remover aluno. Tente novamente!',
         btnText: 'Confirmar',
         dialogType: 'error',
         dialogOptions: false,
@@ -46,34 +95,24 @@ const currentStatus = computed(() => {
     return statusConfig[dialogStatus.value]
 })
 
-const formattedDate = computed(() => {
-    if (!studentInfo.value.born) return ''
-    const d = new Date(studentInfo.value.born)
-    const day = String(d.getDate()).padStart(2, '0')
-    const month = String(d.getMonth() + 1).padStart(2, '0')
-    const year = d.getFullYear()
-    return `${day}/${month}/${year}`  
-})
-
 const hasError = computed(() => {
-    return Object.values(studentInfo.value).some(value => 
-        value === '' || value === null || value === undefined
-    )
+    return studentRow.value ? false : true
 })
 
-watch(formattedDate, (newDate) => {
-    studentInfo.value.bornFormatted = newDate
-})
+const searchClassStudents = () => {
+    if(!searchClass.value) return [];
+    filteredClass.value = classes.find(c => c.id === searchClass.value)?.students ?? [];
+}
+
+const selectStudentRow = (id) => {
+    studentRow.value = id;
+}
 
 const closeModal = (isActive) => {
     isActive.value = false
 }
 
-const confirmDate = () => {
-    menu.value = false
-}
-
-const saveStudent = () => {
+const deleteStudent = () => {
     const sucesso = true 
     dialogStatus.value = sucesso
     feedbackOpen.value = true
@@ -93,96 +132,50 @@ const openModal = () => {
             <v-btn class="btn-extra" v-bind="activatorProps" :text="props.activatorText" variant="text" />
         </template>
         <template v-slot:default="{ isActive }">
-            <v-card class="v-title" title="Adicionar aluno">
+            <v-card class="v-title" title="Remover aluno">
                 <div class="inputs-content">
-                    <label for="name">
-                        Nome:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="name" 
-                        v-model="studentInfo.name" 
-                        type="text"
-                        variant="outlined" 
-                    />
-                    <label for="email">
-                        Email:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="email" 
-                        v-model="studentInfo.email" 
-                        type="email"
-                        variant="outlined" 
-                    />
-                    <label for="cpf">
-                        CPF:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="cpf" 
-                        v-model="studentInfo.cpf" 
-                        type="text"
-                        variant="outlined"
-                        v-maska="'###.###.###-##'"
-                    />
-                    <label for="born">
-                        Nascimento:
-                    </label>
-                    <v-menu
-                        v-model="menu"
-                        :close-on-content-click="false">
-                        <template v-slot:activator="{ props }">
-                            <v-text-field
-                                class="input arrow"
-                                id="born"
-                                v-bind="props"
-                                :model-value="formattedDate"
-                                readonly
-                                variant="outlined"
-                            />
-                        </template>
-                        <v-date-picker
-                            v-model="studentInfo.born"
-                            :color="'#00C174'"
-                            @update:model-value="confirmDate"
-                        />
-                    </v-menu>
-                    <label for="login">
-                        Login:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="login" 
-                        v-model="studentInfo.login" 
-                        type="text"
-                        variant="outlined"
-                    />
-                    <label for="password">
-                        Senha:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="password" 
-                        v-model="studentInfo.password" 
-                        type="password"
-                        variant="outlined"
-                    />
                     <label for="class">
                         Turma:
                     </label>
                     <v-select
-                        :items="[
-                            'Turma 1',
-                            'Turma 2',
-                            'Turma 3'
-                        ]"
                         class="input arrow" 
                         id="class" 
-                        v-model="studentInfo.class" 
-                        type="text"
+                        v-model="searchClass" 
                         variant="outlined"
+                        :items="classes"
+                        item-title="name"
+                        item-value="id"
                     />
+                    <div class="search-content">
+                        <v-btn 
+                            class="btn-search"
+                            @click="searchClassStudents">
+                            Buscar
+                        </v-btn>
+                    </div>
+                    <v-table class="v-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Aluno
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr 
+                                v-for="(classes, index) in filteredClass" 
+                                    :key="index"
+                                    @click="selectStudentRow(classes.id)"
+                                    :class="classes.id == studentRow ? 'selected-class' : ''"
+                                >
+                                    <td>{{ classes.id }}</td>
+                                    <td>{{ classes.name }}</td>
+                            </tr>
+                        </tbody>
+                    </v-table>
                 </div>
                 <v-card-actions 
                     class="btn-content"
@@ -198,7 +191,7 @@ const openModal = () => {
                         class="btn btn-save" 
                         text="Salvar" 
                         :disabled="hasError"
-                        @click="saveStudent"
+                        @click="deleteStudent"
                     >
                     </v-btn>
                 </v-card-actions>
@@ -222,6 +215,11 @@ const openModal = () => {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+.selected-class {
+    background-color: #00C174 !important;
+    color: #ffffff !important;
 }
 
 .disabled-btn {
@@ -297,6 +295,66 @@ const openModal = () => {
 
 .v-dialog:deep(.v-field__field) {
     padding: 0 10px;
+}
+
+.v-dialog .search-content {
+    display: flex;
+    justify-content: right;
+}
+
+.v-dialog .btn-search {
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    color: #ffffff;
+    padding: 5px 28px;
+    flex: 1;
+    background-color: #00C174;
+    margin: 10px 0 0 0;
+    border-radius: 10px;
+    max-width: 109px;
+}
+
+.v-dialog .v-table {
+    margin: 15px 0 0 0;
+}
+
+.v-dialog:deep(table) {
+    border: 1px solid #B5B5B5;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+}
+
+.v-dialog:deep(td),
+.v-dialog:deep(th) {
+    height: 27px;
+    cursor: pointer;
+}
+
+.v-dialog :deep(th:first-child),
+.v-dialog :deep(td:first-child) {
+    text-align: left;
+    padding-left: 15px;
+}
+
+.v-dialog :deep(th:last-child),
+.v-dialog :deep(td:last-child) {
+    text-align: right;
+    padding-right: 15px;
+}
+
+.v-dialog:deep(th) {
+    background-color: #D9D9D9;
+}
+
+.v-dialog:deep(tr:nth-child(odd)) {
+    background-color: #FFFFFF;
+}
+
+.v-dialog:deep(tr:nth-child(even)) {
+    background-color: #D9D9D9;
 }
 
 .v-dialog .btn-content {

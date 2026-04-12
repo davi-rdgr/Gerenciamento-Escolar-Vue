@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps([
     "modelValue",
@@ -13,28 +13,22 @@ const feedbackOpen = ref(false)
 const dialogStatus = ref(null);
 const menu = ref(false)
 
-const studentInfo = ref({
+const classInfo = ref({
     name: '',
-    email: '',
-    cpf: '',
-    born: '',
-    bornFormatted: '',
-    login: '',
-    password: '',
-    class: '',
+    year: '',
 })
 
 const statusConfig = {
     true: {
         title: 'SUCESSO!!!',
-        subtitle: 'Aluno adicionado com sucesso!',
+        subtitle: 'Turma adicionado com sucesso!',
         btnText: 'Confirmar',
         dialogType: 'success',
         dialogOptions: false,
     },
     false: {
         title: 'ERRO!!!',
-        subtitle: 'Erro ao adicionar aluno. Tente novamente!',
+        subtitle: 'Erro ao adicionar turma. Tente novamente!',
         btnText: 'Confirmar',
         dialogType: 'error',
         dialogOptions: false,
@@ -47,22 +41,15 @@ const currentStatus = computed(() => {
 })
 
 const formattedDate = computed(() => {
-    if (!studentInfo.value.born) return ''
-    const d = new Date(studentInfo.value.born)
-    const day = String(d.getDate()).padStart(2, '0')
-    const month = String(d.getMonth() + 1).padStart(2, '0')
-    const year = d.getFullYear()
-    return `${day}/${month}/${year}`  
+    if (!classInfo.value.year) return ''
+    const d = new Date(classInfo.value.year)
+    return d.getFullYear().toString()
 })
 
 const hasError = computed(() => {
-    return Object.values(studentInfo.value).some(value => 
+    return Object.values(classInfo.value).some(value => 
         value === '' || value === null || value === undefined
     )
-})
-
-watch(formattedDate, (newDate) => {
-    studentInfo.value.bornFormatted = newDate
 })
 
 const closeModal = (isActive) => {
@@ -73,7 +60,7 @@ const confirmDate = () => {
     menu.value = false
 }
 
-const saveStudent = () => {
+const saveClass = () => {
     const sucesso = true 
     dialogStatus.value = sucesso
     feedbackOpen.value = true
@@ -93,7 +80,7 @@ const openModal = () => {
             <v-btn class="btn-extra" v-bind="activatorProps" :text="props.activatorText" variant="text" />
         </template>
         <template v-slot:default="{ isActive }">
-            <v-card class="v-title" title="Adicionar aluno">
+            <v-card class="v-title" title="Adicionar turma">
                 <div class="inputs-content">
                     <label for="name">
                         Nome:
@@ -101,33 +88,12 @@ const openModal = () => {
                     <v-text-field
                         class="input" 
                         id="name" 
-                        v-model="studentInfo.name" 
+                        v-model="classInfo.name" 
                         type="text"
                         variant="outlined" 
                     />
-                    <label for="email">
-                        Email:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="email" 
-                        v-model="studentInfo.email" 
-                        type="email"
-                        variant="outlined" 
-                    />
-                    <label for="cpf">
-                        CPF:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="cpf" 
-                        v-model="studentInfo.cpf" 
-                        type="text"
-                        variant="outlined"
-                        v-maska="'###.###.###-##'"
-                    />
-                    <label for="born">
-                        Nascimento:
+                    <label for="year">
+                        Ano:
                     </label>
                     <v-menu
                         v-model="menu"
@@ -135,7 +101,7 @@ const openModal = () => {
                         <template v-slot:activator="{ props }">
                             <v-text-field
                                 class="input arrow"
-                                id="born"
+                                id="year"
                                 v-bind="props"
                                 :model-value="formattedDate"
                                 readonly
@@ -143,46 +109,12 @@ const openModal = () => {
                             />
                         </template>
                         <v-date-picker
-                            v-model="studentInfo.born"
+                            v-model="classInfo.year"
                             :color="'#00C174'"
+                            view-mode="year"
                             @update:model-value="confirmDate"
                         />
                     </v-menu>
-                    <label for="login">
-                        Login:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="login" 
-                        v-model="studentInfo.login" 
-                        type="text"
-                        variant="outlined"
-                    />
-                    <label for="password">
-                        Senha:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="password" 
-                        v-model="studentInfo.password" 
-                        type="password"
-                        variant="outlined"
-                    />
-                    <label for="class">
-                        Turma:
-                    </label>
-                    <v-select
-                        :items="[
-                            'Turma 1',
-                            'Turma 2',
-                            'Turma 3'
-                        ]"
-                        class="input arrow" 
-                        id="class" 
-                        v-model="studentInfo.class" 
-                        type="text"
-                        variant="outlined"
-                    />
                 </div>
                 <v-card-actions 
                     class="btn-content"
@@ -198,7 +130,7 @@ const openModal = () => {
                         class="btn btn-save" 
                         text="Salvar" 
                         :disabled="hasError"
-                        @click="saveStudent"
+                        @click="saveClass"
                     >
                     </v-btn>
                 </v-card-actions>

@@ -11,30 +11,27 @@ const emits = defineEmits([
 
 const feedbackOpen = ref(false)
 const dialogStatus = ref(null);
-const menu = ref(false)
 
-const studentInfo = ref({
+const professorInfo = ref({
     name: '',
     email: '',
-    cpf: '',
-    born: '',
-    bornFormatted: '',
     login: '',
     password: '',
-    class: '',
+    specialty: '',
+    class: ''
 })
 
 const statusConfig = {
     true: {
         title: 'SUCESSO!!!',
-        subtitle: 'Aluno adicionado com sucesso!',
+        subtitle: 'Professor adicionado com sucesso!',
         btnText: 'Confirmar',
         dialogType: 'success',
         dialogOptions: false,
     },
     false: {
         title: 'ERRO!!!',
-        subtitle: 'Erro ao adicionar aluno. Tente novamente!',
+        subtitle: 'Erro ao adicionar professor. Tente novamente!',
         btnText: 'Confirmar',
         dialogType: 'error',
         dialogOptions: false,
@@ -47,8 +44,8 @@ const currentStatus = computed(() => {
 })
 
 const formattedDate = computed(() => {
-    if (!studentInfo.value.born) return ''
-    const d = new Date(studentInfo.value.born)
+    if (!professorInfo.value.born) return ''
+    const d = new Date(professorInfo.value.born)
     const day = String(d.getDate()).padStart(2, '0')
     const month = String(d.getMonth() + 1).padStart(2, '0')
     const year = d.getFullYear()
@@ -56,24 +53,20 @@ const formattedDate = computed(() => {
 })
 
 const hasError = computed(() => {
-    return Object.values(studentInfo.value).some(value => 
+    return Object.values(professorInfo.value).some(value => 
         value === '' || value === null || value === undefined
     )
 })
 
 watch(formattedDate, (newDate) => {
-    studentInfo.value.bornFormatted = newDate
+    professorInfo.value.bornFormatted = newDate
 })
 
 const closeModal = (isActive) => {
     isActive.value = false
 }
 
-const confirmDate = () => {
-    menu.value = false
-}
-
-const saveStudent = () => {
+const saveProfessor = () => {
     const sucesso = true 
     dialogStatus.value = sucesso
     feedbackOpen.value = true
@@ -93,7 +86,7 @@ const openModal = () => {
             <v-btn class="btn-extra" v-bind="activatorProps" :text="props.activatorText" variant="text" />
         </template>
         <template v-slot:default="{ isActive }">
-            <v-card class="v-title" title="Adicionar aluno">
+            <v-card class="v-title" title="Adicionar professor">
                 <div class="inputs-content">
                     <label for="name">
                         Nome:
@@ -101,7 +94,7 @@ const openModal = () => {
                     <v-text-field
                         class="input" 
                         id="name" 
-                        v-model="studentInfo.name" 
+                        v-model="professorInfo.name" 
                         type="text"
                         variant="outlined" 
                     />
@@ -111,50 +104,17 @@ const openModal = () => {
                     <v-text-field
                         class="input" 
                         id="email" 
-                        v-model="studentInfo.email" 
+                        v-model="professorInfo.email" 
                         type="email"
                         variant="outlined" 
                     />
-                    <label for="cpf">
-                        CPF:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="cpf" 
-                        v-model="studentInfo.cpf" 
-                        type="text"
-                        variant="outlined"
-                        v-maska="'###.###.###-##'"
-                    />
-                    <label for="born">
-                        Nascimento:
-                    </label>
-                    <v-menu
-                        v-model="menu"
-                        :close-on-content-click="false">
-                        <template v-slot:activator="{ props }">
-                            <v-text-field
-                                class="input arrow"
-                                id="born"
-                                v-bind="props"
-                                :model-value="formattedDate"
-                                readonly
-                                variant="outlined"
-                            />
-                        </template>
-                        <v-date-picker
-                            v-model="studentInfo.born"
-                            :color="'#00C174'"
-                            @update:model-value="confirmDate"
-                        />
-                    </v-menu>
                     <label for="login">
                         Login:
                     </label>
                     <v-text-field
                         class="input" 
                         id="login" 
-                        v-model="studentInfo.login" 
+                        v-model="professorInfo.login" 
                         type="text"
                         variant="outlined"
                     />
@@ -164,8 +124,23 @@ const openModal = () => {
                     <v-text-field
                         class="input" 
                         id="password" 
-                        v-model="studentInfo.password" 
+                        v-model="professorInfo.password" 
                         type="password"
+                        variant="outlined"
+                    />
+                    <label for="specialty">
+                        Especialidade:
+                    </label>
+                    <v-select
+                        :items="[
+                            'Matemática',
+                            'Português',
+                            'História'
+                        ]"
+                        class="input arrow" 
+                        id="specialty" 
+                        v-model="professorInfo.specialty" 
+                        type="text"
                         variant="outlined"
                     />
                     <label for="class">
@@ -179,7 +154,7 @@ const openModal = () => {
                         ]"
                         class="input arrow" 
                         id="class" 
-                        v-model="studentInfo.class" 
+                        v-model="professorInfo.class" 
                         type="text"
                         variant="outlined"
                     />
@@ -198,7 +173,7 @@ const openModal = () => {
                         class="btn btn-save" 
                         text="Salvar" 
                         :disabled="hasError"
-                        @click="saveStudent"
+                        @click="saveProfessor"
                     >
                     </v-btn>
                 </v-card-actions>

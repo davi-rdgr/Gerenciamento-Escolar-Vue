@@ -89,10 +89,10 @@ const closeModal = (isActive) => {
                     <thead>
                         <tr>
                             <th>
-                                Disciplina
+                                ID
                             </th>
                             <th>
-                                Nota
+                                Turma
                             </th>
                         </tr>
                     </thead>

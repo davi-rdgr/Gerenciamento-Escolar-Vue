@@ -41,14 +41,22 @@ const removeProfessorOpen = ref(false);
 const addClassOpen = ref(false);
 const removeClassOpen = ref(false);
 
-
 </script>
 
 <template>
     <options-card-component
         :content="admin" 
     />
-    <admin-add-student-component 
+    <admin-add-student-component
         v-model="addStudentOpen"
+    />
+    <admin-remove-student-component 
+        v-model="removeStudentOpen"
+    />
+    <admin-add-professor-component 
+        v-model="addProfessorOpen"
+    />
+    <admin-add-class-component 
+        v-model="addClassOpen"
     />
 </template>
