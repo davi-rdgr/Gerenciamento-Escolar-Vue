@@ -1,24 +1,21 @@
 # Sistema de Integração Escolar
 
-## Project setup
-```
+## Instalação
+
+```bash
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
+## Iniciar projeto
+
+```bash
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Usuários para teste
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+| Tipo | Login | Senha |
+|---|---|---|
+| Aluno | aluno | 123456 |
+| Professor | professor | 123456 |
+| Admin | admin | 123456 |
