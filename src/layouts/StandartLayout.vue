@@ -58,7 +58,7 @@ const auth = useAuthStore();
 
 <style scoped>
 .standart-layout {
-    padding: 41px 80px 30px 80px;
+    padding: 25px 80px 30px 80px;
     background-color: #1a1a1a;
 }
 
@@ -72,7 +72,7 @@ const auth = useAuthStore();
 }
 
 .standart-layout .user-info {
-    margin: 80px 0 0 0;
+    margin: 40px 0 0 0;
     display: flex;
     flex-direction: row;
     align-items: start;

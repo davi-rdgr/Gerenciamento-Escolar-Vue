@@ -16,6 +16,6 @@ h1 {
     font-family: 'Inter', sans-serif;
     color: #ffffff;
     text-align: center;
-    margin: 45px 0 0 0;
+    margin: 25px 0 0 0;
 }
 </style>

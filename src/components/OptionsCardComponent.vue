@@ -27,7 +27,7 @@ const props = defineProps([
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin: 87px 0 86px 0;
+    margin: 40px 0 40px 0;
 }
 
 .options-rows .row {
