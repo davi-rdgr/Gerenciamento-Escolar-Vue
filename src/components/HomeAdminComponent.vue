@@ -56,7 +56,13 @@ const removeClassOpen = ref(false);
     <admin-add-professor-component 
         v-model="addProfessorOpen"
     />
+    <admin-remove-professor-component 
+        v-model="removeProfessorOpen"
+    />
     <admin-add-class-component 
         v-model="addClassOpen"
+    />
+    <admin-remove-class-component 
+        v-model="removeClassOpen"
     />
 </template>

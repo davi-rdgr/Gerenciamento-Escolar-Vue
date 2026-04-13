@@ -11,24 +11,35 @@ const emits = defineEmits([
 
 const feedbackOpen = ref(false)
 const dialogStatus = ref(null);
-const menu = ref(false)
 
-const classInfo = ref({
-    name: '',
-    year: '',
-})
+const studentRow = ref('');
+
+const professors = [
+    { 
+        id: 1,
+        name: 'Remus Lupin',
+    },
+    {
+        id: 2,
+        name: 'Toph Beifong',
+    },
+    {
+        id: 3,
+        name: 'Max Verstappen',
+    }
+]
 
 const statusConfig = {
     true: {
         title: 'SUCESSO!!!',
-        subtitle: 'Turma adicionado com sucesso!',
+        subtitle: 'Aluno removido com sucesso!',
         btnText: 'Confirmar',
         dialogType: 'success',
         dialogOptions: false,
     },
     false: {
         title: 'ERRO!!!',
-        subtitle: 'Erro ao adicionar turma. Tente novamente!',
+        subtitle: 'Erro ao remover aluno. Tente novamente!',
         btnText: 'Confirmar',
         dialogType: 'error',
         dialogOptions: false,
@@ -40,27 +51,19 @@ const currentStatus = computed(() => {
     return statusConfig[dialogStatus.value]
 })
 
-const formattedDate = computed(() => {
-    if (!classInfo.value.year) return ''
-    const d = new Date(classInfo.value.year)
-    return d.getFullYear().toString()
+const hasError = computed(() => {
+    return studentRow.value ? false : true
 })
 
-const hasError = computed(() => {
-    return Object.values(classInfo.value).some(value => 
-        value === '' || value === null || value === undefined
-    )
-})
+const selectStudentRow = (id) => {
+    studentRow.value = id;
+}
 
 const closeModal = (isActive) => {
     isActive.value = false
 }
 
-const confirmDate = () => {
-    menu.value = false
-}
-
-const saveClass = () => {
+const deleteStudent = () => {
     const sucesso = true 
     dialogStatus.value = sucesso
     feedbackOpen.value = true
@@ -78,41 +81,31 @@ const openModal = () => {
         class="v-dialog"
         max-width="356">
         <template v-slot:default="{ isActive }">
-            <v-card class="v-title" title="Adicionar turma">
+            <v-card class="v-title" title="Remover professor">
                 <div class="inputs-content">
-                    <label for="name">
-                        Nome:
-                    </label>
-                    <v-text-field
-                        class="input" 
-                        id="name" 
-                        v-model="classInfo.name" 
-                        type="text"
-                        variant="outlined" 
-                    />
-                    <label for="year">
-                        Ano:
-                    </label>
-                    <v-menu
-                        v-model="menu"
-                        :close-on-content-click="false">
-                        <template v-slot:activator="{ props }">
-                            <v-text-field
-                                class="input arrow"
-                                id="year"
-                                v-bind="props"
-                                :model-value="formattedDate"
-                                readonly
-                                variant="outlined"
-                            />
-                        </template>
-                        <v-date-picker
-                            v-model="classInfo.year"
-                            :color="'#00C174'"
-                            view-mode="year"
-                            @update:model-value="confirmDate"
-                        />
-                    </v-menu>
+                    <v-table class="v-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    ID
+                                </th>
+                                <th>
+                                    Professor
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr 
+                                v-for="(classes, index) in professors" 
+                                    :key="index"
+                                    @click="selectStudentRow(classes.id)"
+                                    :class="classes.id == studentRow ? 'selected-class' : ''"
+                                >
+                                    <td>{{ classes.id }}</td>
+                                    <td>{{ classes.name }}</td>
+                            </tr>
+                        </tbody>
+                    </v-table>
                 </div>
                 <v-card-actions 
                     class="btn-content"
@@ -128,7 +121,7 @@ const openModal = () => {
                         class="btn btn-save" 
                         text="Salvar" 
                         :disabled="hasError"
-                        @click="saveClass"
+                        @click="deleteStudent"
                     >
                     </v-btn>
                 </v-card-actions>
@@ -152,6 +145,11 @@ const openModal = () => {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+.selected-class {
+    background-color: #00C174 !important;
+    color: #ffffff !important;
 }
 
 .disabled-btn {
@@ -227,6 +225,66 @@ const openModal = () => {
 
 .v-dialog:deep(.v-field__field) {
     padding: 0 10px;
+}
+
+.v-dialog .search-content {
+    display: flex;
+    justify-content: right;
+}
+
+.v-dialog .btn-search {
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    color: #ffffff;
+    padding: 5px 28px;
+    flex: 1;
+    background-color: #00C174;
+    margin: 10px 0 0 0;
+    border-radius: 10px;
+    max-width: 109px;
+}
+
+.v-dialog .v-table {
+    margin: 15px 0 0 0;
+}
+
+.v-dialog:deep(table) {
+    border: 1px solid #B5B5B5;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    color: #1a1a1a;
+}
+
+.v-dialog:deep(td),
+.v-dialog:deep(th) {
+    height: 27px;
+    cursor: pointer;
+}
+
+.v-dialog :deep(th:first-child),
+.v-dialog :deep(td:first-child) {
+    text-align: left;
+    padding-left: 15px;
+}
+
+.v-dialog :deep(th:last-child),
+.v-dialog :deep(td:last-child) {
+    text-align: right;
+    padding-right: 15px;
+}
+
+.v-dialog:deep(th) {
+    background-color: #D9D9D9;
+}
+
+.v-dialog:deep(tr:nth-child(odd)) {
+    background-color: #FFFFFF;
+}
+
+.v-dialog:deep(tr:nth-child(even)) {
+    background-color: #D9D9D9;
 }
 
 .v-dialog .btn-content {

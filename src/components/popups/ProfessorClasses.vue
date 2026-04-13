@@ -14,7 +14,6 @@ const props = defineProps([
 const emits = defineEmits([
     "update:modelValue",
     "selectClass",
-    "className"
 ])
 
 const addNotesOpen = ref(false);
@@ -52,17 +51,10 @@ const closeModal = (isActive) => {
 
 <template>
     <v-dialog 
-        :model-value="props.activatorText ? undefined : props.modelValue"
-        @update:model-value="props.activatorText ? null : emits('update:modelValue', $event)" class="v-dialog"
+        :model-value="props.modelValue"
+        @update:model-value="emits('update:modelValue', $event)" 
+        class="v-dialog"
         max-width="356">
-        <template v-if="props.activatorText" v-slot:activator="{ props: activatorProps }">
-            <v-btn 
-                class="btn-extra" 
-                v-bind="activatorProps" 
-                :text="props.activatorText" 
-                variant="text" 
-            />
-        </template>
         <template v-slot:default="{ isActive }">
             <v-card 
                 class="v-title" 
@@ -73,16 +65,16 @@ const closeModal = (isActive) => {
                         @click="addNotesOpen = true"
                         :class="!props.selectedClass ? 'disabled-btn' : ''"
                         :disabled="!props.selectedClass"
+                        text="Adicionar nota"
                     >
-                        Adicionar nota
                     </v-btn>
                     <v-btn 
                         class="btn"
                         @click="editNotesOpen = true"
                         :class="!props.selectedClass ? 'disabled-btn' : ''"
                         :disabled="!props.selectedClass"
+                        text="Editar nota"
                         >
-                        Editar nota
                     </v-btn>
                 </div>
                 <v-table class="v-table">

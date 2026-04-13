@@ -45,31 +45,35 @@ const closeModal = (isActive) => {
                 :style="{ '--type-color': typeStyles.color }" 
                 class="v-title" 
                 :title="props.title">
-                <v-card-text class="v-subtitle">
-                    {{ props.subtitle }}
-                </v-card-text>
-                <v-card-actions class="btn-content" v-if="props.dialogOptions">
-                    <v-btn 
-                        class="btn btn-back" 
-                        text="Voltar" 
-                        @click="closeModal(isActive)"
-                    >
-                    </v-btn>
-                    <v-btn 
-                        class="btn" 
-                        :text="props.btnText" 
-                        @click="emitEvent"
-                    >
-                    </v-btn>
-                </v-card-actions>
-                <v-card-actions class="btn-content" v-else>
-                    <v-btn 
-                        class="btn" 
-                        :text="props.btnText" 
-                        @click="emitEvent"
-                    >
-                    </v-btn>
-                </v-card-actions>
+                    <v-card-text class="v-subtitle">
+                        {{ props.subtitle }}
+                    </v-card-text>
+                    <v-card-actions 
+                        class="btn-content" 
+                        v-if="props.dialogOptions">
+                            <v-btn 
+                                class="btn btn-back" 
+                                text="Voltar" 
+                                @click="closeModal(isActive)"
+                            >
+                            </v-btn>
+                            <v-btn 
+                                class="btn" 
+                                :text="props.btnText" 
+                                @click="emitEvent"
+                            >
+                        </v-btn>
+                    </v-card-actions>
+                    <v-card-actions 
+                        class="btn-content" 
+                        v-else>
+                            <v-btn 
+                                class="btn" 
+                                :text="props.btnText" 
+                                @click="emitEvent"
+                            >
+                        </v-btn>
+                    </v-card-actions>
             </v-card>
         </template>
     </v-dialog>

@@ -8,6 +8,7 @@ const student = [{
 }];
 
 const dialogOpen = ref(false);
+const studentClass = ref('6º ano B 2026')
 const notes = [
     { disciplina: 'Matemática', nota: 9.6 },
     { disciplina: 'Português', nota: 4.9 },
@@ -25,6 +26,7 @@ const notes = [
     />
     <student-notes-component
         :notes="notes"
+        :class="studentClass"
         v-model="dialogOpen"
     />
 </template>

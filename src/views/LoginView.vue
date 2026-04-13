@@ -1,42 +1,3 @@
-<template>
-    <header>
-        <h1>
-            Sistema de Integração Escolar
-        </h1>
-    </header>
-    <main>
-        <div class="max-width-content">
-            <v-form class="form" @submit.prevent="handleSubmit">
-                <div>
-                    <label>
-                        Login:
-                    </label>
-                    <v-text-field 
-                        class="input input-text" 
-                        v-model="inputLogin" 
-                        type="text" 
-                        variant="outlined" 
-                    />
-                </div>
-                <div>
-                    <label>
-                        Senha:
-                    </label>
-                    <v-text-field 
-                        class="input input-pass" 
-                        v-model="inputPassword" 
-                        type="password" 
-                        variant="outlined"
-                        :error-messages="erroLogin" />
-                </div>
-                <v-btn class="submit" type="submit">
-                    Entrar
-                </v-btn>
-            </v-form>
-        </div>
-    </main>
-</template>
-
 <script setup>
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
@@ -58,8 +19,44 @@ const handleSubmit = async () => {
         erroLogin.value = 'Login ou senha incorretos.'
     }
 }
-
 </script>
+<template>
+    <main>
+        <div class="max-width-content">
+            <v-form class="form" @submit.prevent="handleSubmit">
+                <div>
+                    <label for="login">
+                        Login:
+                    </label>
+                    <v-text-field 
+                        id="login"
+                        class="input input-text" 
+                        v-model="inputLogin" 
+                        type="text" 
+                        variant="outlined" 
+                    />
+                </div>
+                <div>
+                    <label for="password">
+                        Senha:
+                    </label>
+                    <v-text-field
+                        id="password"
+                        class="input input-pass" 
+                        v-model="inputPassword" 
+                        type="password" 
+                        variant="outlined"
+                        :error-messages="erroLogin" />
+                </div>
+                <v-btn 
+                    class="submit" 
+                    type="submit"
+                    text="Entrar">
+                </v-btn>
+            </v-form>
+        </div>
+    </main>
+</template>
 
 <style scoped>
 * {
@@ -83,15 +80,6 @@ main {
     display: flex;
     align-items: center;
     min-height: calc(100vh - 48px);
-}
-
-h1 {
-    font-size: 32px;
-    font-weight: 600;
-    font-family: 'Inter', sans-serif;
-    color: #ffffff;
-    text-align: center;
-    margin: 45px 0 0 0;
 }
 
 .max-width-content {

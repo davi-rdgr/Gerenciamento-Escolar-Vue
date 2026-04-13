@@ -67,6 +67,14 @@ export const registerComponent = (app) => {
         defineAsyncComponent(() => import('./components/popups/AdminAddProfessor.vue'))
     )
     app.component(
+        'admin-remove-professor-component',
+        defineAsyncComponent(() => import('./components/popups/AdminRemoveProfessor.vue'))
+    )
+    app.component(
+        'admin-remove-class-component',
+        defineAsyncComponent(() => import('./components/popups/AdminRemoveClass.vue'))
+    )
+    app.component(
         'admin-add-class-component',
         defineAsyncComponent(() => import('./components/popups/AdminAddClass.vue'))
     )

@@ -43,17 +43,10 @@ const saveNotes = (isActive) => {
 
 <template>
     <v-dialog 
-        :model-value="props.activatorText ? undefined : props.modelValue"
-        @update:model-value="props.activatorText ? null : emits('update:modelValue', $event)" class="v-dialog"
+        :model-value="props.modelValue"
+        @update:model-value="emits('update:modelValue', $event)" 
+        class="v-dialog"
         max-width="356">
-        <template v-if="props.activatorText" v-slot:activator="{ props: activatorProps }">
-            <v-btn 
-                class="btn-extra" 
-                v-bind="activatorProps" 
-                :text="props.activatorText" 
-                variant="text" 
-            />
-        </template>
         <template v-slot:default="{ isActive }">
             <v-card 
                 class="v-title" 
@@ -73,7 +66,8 @@ const saveNotes = (isActive) => {
                         </tr>
                     </thead>
                     <tbody>
-                        <template v-for="(student, index) in localClasses[props.classIndex].students" :key="index">
+                        <template 
+                            v-for="(student, index) in localClasses[props.classIndex].students" :key="index">
                             <tr v-for="(note, noteIndex) in student.grid" :key="noteIndex">
                                 <td>{{ student.name }}</td>
                                 <td>{{ note.disciplina }}</td>

@@ -125,12 +125,10 @@ const openModal = () => {
 </script>
 
 <template>
-    <v-dialog :model-value="props.activatorText ? undefined : props.modelValue"
-        @update:model-value="props.activatorText ? null : emits('update:modelValue', $event)" class="v-dialog"
+    <v-dialog :model-value="props.modelValue"
+        @update:model-value="emits('update:modelValue', $event)" 
+        class="v-dialog"
         max-width="356">
-        <template v-if="props.activatorText" v-slot:activator="{ props: activatorProps }">
-            <v-btn class="btn-extra" v-bind="activatorProps" :text="props.activatorText" variant="text" />
-        </template>
         <template v-slot:default="{ isActive }">
             <v-card class="v-title" title="Remover aluno">
                 <div class="inputs-content">

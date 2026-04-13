@@ -11,24 +11,34 @@ const emits = defineEmits([
 
 const feedbackOpen = ref(false)
 const dialogStatus = ref(null);
-const menu = ref(false)
+const searchClass = ref(null);
 
-const classInfo = ref({
-    name: '',
-    year: '',
-})
+const classes = [
+    { 
+        id: 1,
+        name: '7° ano B 2026',
+    },
+    {
+        id: 2,
+        name: '3° ano C 2026',
+    },
+    {
+        id: 3,
+        name: '4° ano A 2026',
+    }
+]
 
 const statusConfig = {
     true: {
         title: 'SUCESSO!!!',
-        subtitle: 'Turma adicionado com sucesso!',
+        subtitle: 'Turma removida com sucesso!',
         btnText: 'Confirmar',
         dialogType: 'success',
         dialogOptions: false,
     },
     false: {
         title: 'ERRO!!!',
-        subtitle: 'Erro ao adicionar turma. Tente novamente!',
+        subtitle: 'Erro ao remover turma. Tente novamente!',
         btnText: 'Confirmar',
         dialogType: 'error',
         dialogOptions: false,
@@ -40,27 +50,15 @@ const currentStatus = computed(() => {
     return statusConfig[dialogStatus.value]
 })
 
-const formattedDate = computed(() => {
-    if (!classInfo.value.year) return ''
-    const d = new Date(classInfo.value.year)
-    return d.getFullYear().toString()
-})
-
 const hasError = computed(() => {
-    return Object.values(classInfo.value).some(value => 
-        value === '' || value === null || value === undefined
-    )
+    return searchClass.value ? false : true
 })
 
 const closeModal = (isActive) => {
     isActive.value = false
 }
 
-const confirmDate = () => {
-    menu.value = false
-}
-
-const saveClass = () => {
+const deleteClass = () => {
     const sucesso = true 
     dialogStatus.value = sucesso
     feedbackOpen.value = true
@@ -78,41 +76,20 @@ const openModal = () => {
         class="v-dialog"
         max-width="356">
         <template v-slot:default="{ isActive }">
-            <v-card class="v-title" title="Adicionar turma">
+            <v-card class="v-title" title="Remover turma">
                 <div class="inputs-content">
-                    <label for="name">
-                        Nome:
+                    <label for="class">
+                        Turma:
                     </label>
-                    <v-text-field
-                        class="input" 
-                        id="name" 
-                        v-model="classInfo.name" 
-                        type="text"
-                        variant="outlined" 
+                    <v-select
+                        class="input arrow" 
+                        id="class" 
+                        v-model="searchClass" 
+                        variant="outlined"
+                        :items="classes"
+                        item-title="name"
+                        item-value="id"
                     />
-                    <label for="year">
-                        Ano:
-                    </label>
-                    <v-menu
-                        v-model="menu"
-                        :close-on-content-click="false">
-                        <template v-slot:activator="{ props }">
-                            <v-text-field
-                                class="input arrow"
-                                id="year"
-                                v-bind="props"
-                                :model-value="formattedDate"
-                                readonly
-                                variant="outlined"
-                            />
-                        </template>
-                        <v-date-picker
-                            v-model="classInfo.year"
-                            :color="'#00C174'"
-                            view-mode="year"
-                            @update:model-value="confirmDate"
-                        />
-                    </v-menu>
                 </div>
                 <v-card-actions 
                     class="btn-content"
@@ -126,9 +103,9 @@ const openModal = () => {
                     </v-btn>
                     <v-btn 
                         class="btn btn-save" 
-                        text="Salvar" 
+                        text="Excluir" 
                         :disabled="hasError"
-                        @click="saveClass"
+                        @click="deleteClass"
                     >
                     </v-btn>
                 </v-card-actions>
@@ -152,6 +129,11 @@ const openModal = () => {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+.selected-class {
+    background-color: #00C174 !important;
+    color: #ffffff !important;
 }
 
 .disabled-btn {
