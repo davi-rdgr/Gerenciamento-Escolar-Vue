@@ -40,6 +40,7 @@ const addProfessorOpen = ref(false);
 const removeProfessorOpen = ref(false);
 const addClassOpen = ref(false);
 const removeClassOpen = ref(false);
+const loading = ref(false);
 
 </script>
 
@@ -64,5 +65,8 @@ const removeClassOpen = ref(false);
     />
     <admin-remove-class-component 
         v-model="removeClassOpen"
+    />
+    <loading-component
+        :active="loading"
     />
 </template>

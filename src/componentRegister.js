@@ -12,6 +12,12 @@ export const registerComponent = (app) => {
         defineAsyncComponent(() => import('./layouts/StandartLayout.vue'))
     )
 
+    // loading
+    app.component(
+        "loading-component",
+        defineAsyncComponent(() => import('./components/loading/LoadingComponent.vue'))
+    )
+
     // dialogs
     app.component(
         'dialog-component',
