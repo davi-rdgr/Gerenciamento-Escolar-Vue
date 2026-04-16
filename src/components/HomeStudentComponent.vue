@@ -1,5 +1,15 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import StudentRepository from '@/infraestructure/api/student';
+import { useAuthStore } from '@/stores/authStore';
+
+onMounted(async () => {
+    const auth = useAuthStore();
+    console.log(auth.user.id)
+    const studentRepository = new StudentRepository();
+
+    console.log(await studentRepository.getStudent(1))
+})
 
 const student = [{
     title: 'Minhas notas',

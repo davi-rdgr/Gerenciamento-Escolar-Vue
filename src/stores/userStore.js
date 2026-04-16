@@ -1,14 +1,14 @@
+import UserRepository from "@/infraestructure/api/user";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import UserRepository from "@/infraestructure/api/user";
 
 const userRepository = new UserRepository();
 
-export const useAuthStore = defineStore('auth', () => {
+export const useAuthStore = defineStore('user', () => {
     const user = ref(null);
 
     const loadUser = () => {
-        const saved = localStorage.getItem('user');
+        const saved = localStorage.getItem('userInfos');
         if (saved) {
             user.value = JSON.parse(saved);
         }
@@ -16,12 +16,12 @@ export const useAuthStore = defineStore('auth', () => {
 
     const setUser = (userData) => {
         user.value = userData;
-        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('userInfos', JSON.stringify(userData));
     }
 
-    const login = async (login, password) => {
+    const getUserInfos = async (userId) => {
         try {
-            const response = await userRepository.getUser(login, password);
+            const response = await userRepository.getUserInfos(userId);
             if (!response) return false;
 
             setUser(response);
@@ -34,8 +34,9 @@ export const useAuthStore = defineStore('auth', () => {
 
     const logout = () => {
         user.value = null;
-        localStorage.removeItem('user');
+        localStorage.removeItem('userInfos');
     }
 
-    return { user, login, logout, loadUser }
+
+    return { user, getUserInfos, logout, loadUser }
 })

@@ -3,21 +3,24 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { ref } from 'vue'
 
-
 const auth = useAuthStore();
 const router = useRouter();
 
 const inputLogin = ref('');
 const inputPassword = ref('');
 const erroLogin = ref('');
+const loading = ref(false);
 
 const handleSubmit = async () => {
-    const success = auth.login(inputLogin.value, inputPassword.value);
+    loading.value = true;
+    const success = await auth.login(inputLogin.value, inputPassword.value);
+    console.log(success)
     if (success) {
         router.push('/home')
     } else {
         erroLogin.value = 'Login ou senha incorretos.'
     }
+    loading.value = false;
 }
 </script>
 <template>
@@ -56,6 +59,9 @@ const handleSubmit = async () => {
             </v-form>
         </div>
     </main>
+    <loading-component
+        :active="loading"
+    />
 </template>
 
 <style scoped>
