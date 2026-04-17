@@ -8,12 +8,10 @@ const loading = ref(false);
 onMounted(() => {
     loading.value = true;
     auth.loadUser();
-    //console.log(auth.user)
     loading.value = false;
 })
 
 const role = computed(() => auth.user?.perfil);
-
 
 </script>
 <template>

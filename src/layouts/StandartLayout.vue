@@ -1,10 +1,12 @@
 <script setup>
 import { useAuthStore } from '@/stores/authStore';
+import { useStudentStore } from '@/stores/studentStore';
 import router from '@/router';
 import { ref } from 'vue';
 
+const authStore = useAuthStore();
+const studentStore = useStudentStore();
 const logoutOpen = ref(false)
-
 const title = ref('SAIR');
 const subtitle = ref('Deseja realmente encerrar a sessão?');
 const btnText = ref('Confirmar');
@@ -12,6 +14,8 @@ const dialogType = ref('neutral');
 const dialogOptions = ref(true);
 
 const logout = () => {
+    authStore.logout();
+    studentStore.logout();
     router.push('/')
 }
 
@@ -19,7 +23,6 @@ const openModal = () => {
     logoutOpen.value = true;
 }
 
-const auth = useAuthStore();
 </script>
 
 <template>
@@ -30,10 +33,10 @@ const auth = useAuthStore();
         <div class="user-info">
             <div class="content">
                 <span>
-                    {{ auth.user?.name }}
+                    {{ studentStore.student?.nome }}
                 </span>
                 <span>
-                    {{ auth.user?.email }}
+                    {{ studentStore.student?.email }}
                 </span>
             </div>
             <v-btn 

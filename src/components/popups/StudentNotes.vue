@@ -38,7 +38,7 @@ const closeModal = (isActive) => {
                     <tbody>
                         <tr v-for="(note, index) in props.notes" :key="index">
                             <td>{{ note.disciplina }}</td>
-                            <td>{{ note.nota }}</td>
+                            <td>{{ note.valor }}</td>
                         </tr>
                     </tbody>
                 </v-table>

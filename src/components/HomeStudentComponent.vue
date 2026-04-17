@@ -1,14 +1,20 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import StudentRepository from '@/infraestructure/api/student';
 import { useAuthStore } from '@/stores/authStore';
+import { useStudentStore } from '@/stores/studentStore';
+
+const auth = useAuthStore();
+const studentStore = useStudentStore();
+const studentNotes = ref([]);
+const studentClass = ref('');
+const loading = ref(false);
 
 onMounted(async () => {
-    const auth = useAuthStore();
-    console.log(auth.user.id)
-    const studentRepository = new StudentRepository();
-
-    console.log(await studentRepository.getStudent(1))
+    loading.value = true;
+    await studentStore.getStudentInfos(auth.user.id);
+    studentNotes.value = studentStore.student?.notas || [];
+    studentClass.value = `${studentStore.student?.nomeTurma} ${studentStore?.student.ano}`
+    loading.value = false;
 })
 
 const student = [{
@@ -18,15 +24,6 @@ const student = [{
 }];
 
 const dialogOpen = ref(false);
-const studentClass = ref('6º ano B 2026')
-const notes = [
-    { disciplina: 'Matemática', nota: 9.6 },
-    { disciplina: 'Português', nota: 4.9 },
-    { disciplina: 'História', nota: 6.0 },
-    { disciplina: 'Geografia', nota: 2.6 },
-    { disciplina: 'Ed. Física', nota: 4.5 },
-    { disciplina: 'Química', nota: 3.6 },
-]
 
 </script>
 
@@ -35,8 +32,11 @@ const notes = [
         :content="student" 
     />
     <student-notes-component
-        :notes="notes"
+        :notes="studentNotes"
         :class="studentClass"
         v-model="dialogOpen"
+    />
+    <loading-component
+        :active="loading"
     />
 </template>

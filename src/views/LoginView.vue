@@ -14,7 +14,6 @@ const loading = ref(false);
 const handleSubmit = async () => {
     loading.value = true;
     const success = await auth.login(inputLogin.value, inputPassword.value);
-    console.log(success)
     if (success) {
         router.push('/home')
     } else {
