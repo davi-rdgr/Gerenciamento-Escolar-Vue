@@ -1,5 +1,22 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useAuthStore } from '@/stores/authStore';
+import axios from "axios";
+
+const authStore = useAuthStore();
+
+onMounted(async () => {
+    /* console.log(authStore.user.id)
+    const response = await axios.get(`http://localhost:8080/professores/${authStore.user.id}/detalhes`)
+    console.log(response) */
+
+    const response = await axios.get(`http://localhost:8080/usuarios/me`, {
+        params: {
+            login: authStore.user.login
+        }
+    })
+    console.log(response);
+})
 
 const professor = [{
     title: 'Minhas turmas',
@@ -10,8 +27,8 @@ const professor = [{
 const dialogOpen = ref(false);
 const classIndex = ref();
 const classes = [
-    { 
-        id: '1', 
+    {
+        id: '1',
         turma: '7° ano C 2026',
         students: [
             {
@@ -43,8 +60,8 @@ const classes = [
             },
         ]
     },
-    { 
-        id: '2', 
+    {
+        id: '2',
         turma: '7° ano B 2026',
         students: [
             {
@@ -76,8 +93,8 @@ const classes = [
             }
         ]
     },
-    { 
-        id: '3', 
+    {
+        id: '3',
         turma: '5° ano C 2026',
         students: [
             {
@@ -125,19 +142,9 @@ const selectClass = (id, index, selectedClassName) => {
 </script>
 
 <template>
-    <options-card-component
-        :content="professor" 
-    />
-    <professor-classes-component
-        :classes="classes"
-        :dialogOptions="dialogOptions"
-        :btnText="btnText"
-        :selectedClass="selectedClass"
-        :classIndex="classIndex"
-        :className="className"
-        v-model="dialogOpen"
-        @selectClass="selectClass"
-    />
+    <options-card-component :content="professor" />
+    <professor-classes-component :classes="classes" :dialogOptions="dialogOptions" :btnText="btnText"
+        :selectedClass="selectedClass" :classIndex="classIndex" :className="className" v-model="dialogOpen"
+        @selectClass="selectClass" />
 
 </template>
-

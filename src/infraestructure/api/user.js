@@ -3,7 +3,7 @@ import axios from "axios";
 export default class UserRepository {
     async getUser(login, password) {
         try {
-            const response = await axios.post('http://localhost:8080/auth/login', {
+            const response = await axios.post('http://localhost:8080/usuarios/auth', {
                 login: login,
                 senha: password
             });
@@ -13,9 +13,9 @@ export default class UserRepository {
         }
     }
 
-    async getUserInfos(userId) {
+    async getUserInfos(usuarioId) {
         try {
-            const response = await axios.get(`http://localhost:8080/alunos/${userId}/detalhes`)
+            const response = await axios.get(`http://localhost:8080/usuarios/${usuarioId}/dashboard`)
             return response.data;
         } catch (error) {
             console.error("Erro ao buscar os dados do aluno", error)

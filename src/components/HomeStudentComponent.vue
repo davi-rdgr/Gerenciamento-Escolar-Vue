@@ -1,19 +1,19 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
-import { useStudentStore } from '@/stores/studentStore';
+import { useUserStore } from '@/stores/userStore';
 
 const auth = useAuthStore();
-const studentStore = useStudentStore();
+const user = useUserStore();
 const studentNotes = ref([]);
 const studentClass = ref('');
 const loading = ref(false);
 
 onMounted(async () => {
     loading.value = true;
-    await studentStore.getStudentInfos(auth.user.id);
-    studentNotes.value = studentStore.student?.notas || [];
-    studentClass.value = `${studentStore.student?.nomeTurma} ${studentStore?.student.ano}`
+    await user.getUserInfos(auth.user?.id);
+    studentNotes.value = user.userInfos?.notas || [];
+    studentClass.value = `${user.userInfos?.nomeTurma} ${user.userInfos?.ano}`
     loading.value = false;
 })
 
