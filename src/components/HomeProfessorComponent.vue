@@ -1,21 +1,21 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
-import axios from "axios";
+import { useUserStore } from '@/stores/userStore';
 
-const authStore = useAuthStore();
+const auth = useAuthStore();
+const user = useUserStore();
+const loading = ref(false);
+
+const professorClasses = ref([]);
+const professorSubject = ref([]);
 
 onMounted(async () => {
-    /* console.log(authStore.user.id)
-    const response = await axios.get(`http://localhost:8080/professores/${authStore.user.id}/detalhes`)
-    console.log(response) */
-
-    const response = await axios.get(`http://localhost:8080/usuarios/me`, {
-        params: {
-            login: authStore.user.login
-        }
-    })
-    console.log(response);
+    loading.value = true;
+    await user.getUserInfos(auth.user?.id);
+    professorClasses.value = user.userInfos?.turmas || [];
+    professorSubject.value = user.userInfos?.disciplinas ||[];
+    loading.value = false;
 })
 
 const professor = [{
@@ -26,125 +26,33 @@ const professor = [{
 
 const dialogOpen = ref(false);
 const classIndex = ref();
-const classes = [
-    {
-        id: '1',
-        turma: '7° ano C 2026',
-        students: [
-            {
-                id: 1,
-                name: 'Clark Kent',
-                grid: [
-                    { disciplina: 'Matemática', nota: 9.5 },
-                    { disciplina: 'História', nota: 6.2 },
-                    { disciplina: 'Português', nota: 2.5 },
-                ]
-            },
-            {
-                id: 2,
-                name: 'Wally West',
-                grid: [
-                    { disciplina: 'Matemática', nota: 9.5 },
-                    { disciplina: 'História', nota: 6.2 },
-                    { disciplina: 'Português', nota: 2.5 },
-                ]
-            },
-            {
-                id: 3,
-                name: 'Diana',
-                grid: [
-                    { disciplina: 'Matemática', nota: 9.5 },
-                    { disciplina: 'História', nota: 6.2 },
-                    { disciplina: 'Português', nota: 2.5 },
-                ]
-            },
-        ]
-    },
-    {
-        id: '2',
-        turma: '7° ano B 2026',
-        students: [
-            {
-                id: 4,
-                name: 'Antony Stark',
-                grid: [
-                    { disciplina: 'Matemática', nota: 9.5 },
-                    { disciplina: 'História', nota: 6.2 },
-                    { disciplina: 'Português', nota: 2.5 },
-                ]
-            },
-            {
-                id: 5,
-                name: 'Bruce Banner',
-                grid: [
-                    { disciplina: 'Matemática', nota: 9.5 },
-                    { disciplina: 'História', nota: 6.2 },
-                    { disciplina: 'Português', nota: 2.5 },
-                ]
-            },
-            {
-                id: 6,
-                name: 'Steven Rogers',
-                grid: [
-                    { disciplina: 'Matemática', nota: 9.5 },
-                    { disciplina: 'História', nota: 6.2 },
-                    { disciplina: 'Português', nota: 2.5 },
-                ]
-            }
-        ]
-    },
-    {
-        id: '3',
-        turma: '5° ano C 2026',
-        students: [
-            {
-                id: 7,
-                name: 'Gwen Stacy',
-                grid: [
-                    { disciplina: 'Matemática', nota: 9.5 },
-                    { disciplina: 'História', nota: 6.2 },
-                    { disciplina: 'Português', nota: 2.5 },
-                ]
-            },
-            {
-                id: 8,
-                name: 'Peter Parker',
-                grid: [
-                    { disciplina: 'Matemática', nota: 9.5 },
-                    { disciplina: 'História', nota: 6.2 },
-                    { disciplina: 'Português', nota: 2.5 },
-                ]
-            },
-            {
-                id: 9,
-                name: 'Maryjane Watson',
-                grid: [
-                    { disciplina: 'Matemática', nota: 9.5 },
-                    { disciplina: 'História', nota: 6.2 },
-                    { disciplina: 'Português', nota: 2.5 },
-                ]
-            }
-        ]
-    },
-]
 
 const btnText = ref("Voltar");
 const dialogOptions = ref(false);
 const selectedClass = ref('');
-const className = ref('');
 
-const selectClass = (id, index, selectedClassName) => {
+const selectClass = (id, index) => {
     selectedClass.value = id;
     classIndex.value = index;
-    className.value = selectedClassName
 }
-
 </script>
 
 <template>
-    <options-card-component :content="professor" />
-    <professor-classes-component :classes="classes" :dialogOptions="dialogOptions" :btnText="btnText"
-        :selectedClass="selectedClass" :classIndex="classIndex" :className="className" v-model="dialogOpen"
-        @selectClass="selectClass" />
+    <options-card-component 
+        :content="professor" 
+    />
+    <professor-classes-component
+        :classes="professorClasses" 
+        :subjects="professorSubject"
+        :dialogOptions="dialogOptions" 
+        :btnText="btnText"
+        :selectedClass="selectedClass" 
+        :classIndex="classIndex" 
+        v-model="dialogOpen"
+        @selectClass="selectClass" 
+    />
+    <loading-component
+        :active="loading"
+    />
 
 </template>

@@ -3,11 +3,11 @@ import { ref } from 'vue';
 
 const props = defineProps([
     "classes",
+    "subjects",
     "dialogOptions",
     "btnText",
     "selectedClass",
     "classIndex",
-    "className",
     "modelValue"
 ])
 
@@ -19,14 +19,7 @@ const emits = defineEmits([
 const addNotesOpen = ref(false);
 const editNotesOpen = ref(false);
 
-const professorSubjects = [
-    {
-        id: 1,
-        name: "Matemática"
-    }
-]
-
-const professorSubjectNames = professorSubjects.map(s => s.name)
+const professorSubjectNames = props.subjects.map(s => s.name)
 
 const professorClasses = props.classes.map(turma => ({
     ...turma,
@@ -92,14 +85,14 @@ const closeModal = (isActive) => {
                         <tr 
                             v-for="(classes, index) in props.classes" 
                                 :key="index"
-                                @click="emits('selectClass', classes.id, index, classes.turma)"
+                                @click="emits('selectClass', classes.id, index)"
                                 :class="classes.id == props.selectedClass ? 'selected-class' : ''"
                             >
                                 <td>{{ classes.id }}</td>
-                                <td>{{ classes.turma }}</td>
+                                <td>{{ classes.nome }} {{ classes.ano }}</td>
                         </tr>
                     </tbody>
-                </v-table>
+                </v-table> 
                 <v-card-actions class="btn-content" v-if="props.dialogOptions">
                     <v-btn 
                         class="btn btn-back" 
@@ -122,18 +115,17 @@ const closeModal = (isActive) => {
             </v-card>
         </template>
     </v-dialog>
-    <professor-add-notes-component
+    <professor-add-notes-component v-if="addNotesOpen"
         v-model="addNotesOpen"
         :classIndex="props.classIndex"
-        :classes="props.classes"
-        :professorSubjects="professorSubjects"
+        :selectedClass="props.selectedClass"
+        :professorSubjects="props.subjects"
     />
     <professor-edit-notes-component 
         v-model="editNotesOpen"
         :classIndex="props.classIndex"
         :classes="professorClasses"
-        :professorSubjects="professorSubjects"
-        :className="props.className"
+        :professorSubjects="props.subjects"
     />    
 </template>
 

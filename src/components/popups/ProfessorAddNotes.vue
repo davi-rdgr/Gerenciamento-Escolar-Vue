@@ -1,10 +1,12 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import ClassRepository from '@/infraestructure/api/class';
+import NoteRepository from '@/infraestructure/api/note';
 
 const props = defineProps([
     "modelValue",
     "classIndex",
-    "classes",
+    "selectedClass",
     "professorSubjects"
 ])
 
@@ -12,10 +14,15 @@ const emits = defineEmits([
     "update:modelValue",
 ])
 
+const classRepository = new ClassRepository();
+const noteRepository = new NoteRepository();
+
+const loading = ref(false);
 const student = ref('');
 const subject = ref('');
 const notes = ref('');
 const touched = ref(false);
+const classes = ref([]);
 
 const notesRules = {
     required: v => !!v || 'Campo obrigatório',
@@ -47,6 +54,29 @@ const closeModal = (isActive) => {
     isActive.value = false;
 }
 
+const addStudentNote = async () => {
+    if(!student.value || !props.selectedClass || !subject.value || !notes.value) return;
+    try {
+        loading.value = true;
+        const request = await noteRepository.addNote(student.value, props.selectedClass, subject.value, notes.value);
+        console.log(request)
+        loading.value = false;
+    } catch(error) {
+        //colocar aqueles avisos de confirmação ou não aquid epois
+        loading.value = false;
+    }
+}
+
+onMounted(async () => {
+    try {
+        loading.value = true;
+        classes.value = await classRepository.getClassStudents(props.selectedClass);
+        loading.value = false;
+    } catch(error) {
+        //colocar aqueles avisos de confirmação ou não aquid epois
+        loading.value = false;
+    }
+})
 </script>
 
 <template>
@@ -63,8 +93,8 @@ const closeModal = (isActive) => {
                     <v-select 
                         class="input arrow" 
                         id="student" 
-                        :items="props.classes[props.classIndex].students"
-                        item-title="name" 
+                        :items="classes || []"
+                        item-title="nome" 
                         item-value="id" 
                         v-model="student" 
                         type="text"
@@ -76,9 +106,9 @@ const closeModal = (isActive) => {
                     <v-select 
                         class="input arrow" 
                         id="subject" 
-                        :items="props.professorSubjects"
-                        item-title="name"
-                        item-value="id" 
+                        :items="props.professorSubjects || []"
+                        item-title="disciplina"
+                        item-value="disciplinaId" 
                         v-model="subject" 
                         type="text"
                         variant="outlined" 
@@ -115,11 +145,14 @@ const closeModal = (isActive) => {
                         class="btn btn-save" 
                         text="Salvar" 
                         :disabled="hasError"
-                        @click="() => { }"
+                        @click="addStudentNote"
                     >
                     </v-btn>
                 </v-card-actions>
             </v-card>
+            <loading-component 
+                :active="loading"
+            />
         </template>
     </v-dialog>
 </template>
