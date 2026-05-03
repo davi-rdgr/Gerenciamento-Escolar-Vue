@@ -7,6 +7,7 @@ const props = defineProps([
     "modelValue",
     "classIndex",
     "selectedClass",
+    "className",
     "professorSubjects"
 ])
 
@@ -85,7 +86,7 @@ onMounted(async () => {
         class="v-dialog"
         max-width="356">
         <template v-slot:default="{ isActive }">
-            <v-card class="v-title" title="Adicionar nota">
+            <v-card class="v-title" :title="'Adicionar nota - ' + props.className">
                 <div class="inputs-content">
                     <label for="student">
                         Aluno:

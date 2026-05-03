@@ -1,33 +1,33 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import NoteRepository from '@/infraestructure/api/note';
 
 const props = defineProps([
     "modelValue",
     "classIndex",
-    "classes",
-    "professorSubjects",
-    "className"
+    "selectedClass",
+    "className",
+    "professorSubjects"
 ])
 
 const emits = defineEmits([
     "update:modelValue",
-    "updateClasses"
 ])
-const localClasses = ref(JSON.parse(JSON.stringify(props.classes || [])))
 
+const noteRepository = new NoteRepository();
+const notes = ref([]);
+const originalNotes = ref([]);
+const loading = ref(false);
 const notesRules = {
     required: v => !!v || '',
-    decimal: v => /^\d+(\.\d{1})?$/.test(v) || ''
+    decimal: v => /^\d+(\.\d{1})?$/.test(String(v)) || ''
 }
 
 const hasError = computed(() => {
-    return localClasses.value[props.classIndex].students.some(student =>
-        student.grid.some(note => 
-            note.nota === 0 || 
-            note.nota === '' || 
-            note.nota === null ||
-            notesRules.decimal(note.nota) !== true
-        )
+    return notes.value.some(note =>
+        note.nota === null ||
+        note.nota === '' ||
+        notesRules.decimal(note.nota) !== true
     )
 })
 
@@ -35,10 +35,39 @@ const closeModal = (isActive) => {
     isActive.value = false;
 }
 
-const saveNotes = (isActive) => {
-    //emits('updateClasses', localClasses.value)
-    closeModal(isActive)
+const saveNotes = async (isActive) => {
+    const changed = notes.value.filter(n => {
+        const original = originalNotes.value.find(o => o.notaId === n.notaId);
+        return original && original.nota !== n.nota;
+    });
+
+    if (changed.length === 0) {
+        closeModal(isActive);
+        return;
+    }
+
+    const payload = changed.map(n => ({
+        notaId: n.notaId,
+        nota: n.nota
+    }));
+    console.log(typeof payload);
+    const request = await noteRepository.updateNotes(payload);
+    console.log(request);
+
+    closeModal(isActive);
 }
+
+onMounted(async () => {
+    try {
+        loading.value = true;
+        notes.value = await noteRepository.getDetailsNotes(props.selectedClass);
+        originalNotes.value = notes.value.map(n => ({ ...n }));
+        loading.value = false;
+    } catch(error) {
+        //colocar aqueles avisos de confirmação ou não aquid epois
+        loading.value = false;
+    }
+})
 </script>
 
 <template>
@@ -54,38 +83,25 @@ const saveNotes = (isActive) => {
                 <v-table class="v-table">
                     <thead>
                         <tr>
-                            <th>
-                                ID
-                            </th>
-                            <th>
-                                Aluno
-                            </th>
-                            <th>
-                                Nota
-                            </th>
+                            <th>Aluno</th>
+                            <th>Disciplina</th>
+                            <th>Nota</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <template 
-                            v-for="(student, index) in localClasses[props.classIndex].students" :key="index">
-                            <tr v-for="(note, noteIndex) in student.grid" :key="noteIndex">
-                                <td>{{ student.name }}</td>
-                                <td>{{ note.disciplina }}</td>
-                                <td>
-                                    <v-text-field
-                                        class="input-note"
-                                        type="number"
-                                        v-model="note.nota"
-                                        step="0.1"
-                                        :rules="[
-                                            notesRules.required, 
-                                            notesRules.decimal
-                                        ]"
-                                        @input="note.nota = Math.min(10, Math.max(0, Number(note.nota)))"
-                                    />
-                                </td>
-                            </tr>
-                        </template>
+                        <tr v-for="(note, index) in notes" :key="index">
+                            <td>{{ note.alunoNome }}</td>
+                            <td>{{ note.disciplina }}</td>
+                            <td>
+                                <v-text-field
+                                    class="input-note"
+                                    type="number"
+                                    v-model="note.nota"
+                                    step="0.1"
+                                    @input="note.nota = Math.min(10, Math.max(0, Number(note.nota)))"
+                                />
+                            </td>
+                        </tr>
                     </tbody>
                 </v-table>
                 <v-card-actions class="btn-content">
@@ -94,15 +110,18 @@ const saveNotes = (isActive) => {
                         text="Voltar" 
                         @click="closeModal(isActive)">
                     </v-btn>
-                    <v-btn 
-                        class="btn btn-save" 
-                        text="Salvar" 
+                    <v-btn
+                        class="btn btn-save"
+                        text="Salvar"
                         :disabled="hasError"
                         @click="saveNotes(isActive)"
                     >
                     </v-btn>
                 </v-card-actions>
             </v-card>
+            <loading-component 
+                :active="loading"
+            />
         </template>
     </v-dialog>
 </template>

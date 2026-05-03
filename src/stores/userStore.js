@@ -20,7 +20,6 @@ export const useUserStore = defineStore('user', () => {
     }
 
     const getUserInfos = async (usuarioId) => {
-        console.log(usuarioId)
         try {
             const response = await userRepository.getUserInfos(usuarioId);
             if (!response) return false;

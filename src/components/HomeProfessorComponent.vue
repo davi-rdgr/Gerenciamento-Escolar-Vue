@@ -25,15 +25,16 @@ const professor = [{
 }];
 
 const dialogOpen = ref(false);
-const classIndex = ref();
-
 const btnText = ref("Voltar");
 const dialogOptions = ref(false);
 const selectedClass = ref('');
+const classIndex = ref();
+const className = ref('');
 
-const selectClass = (id, index) => {
+const selectClass = (id, index, name) => {
     selectedClass.value = id;
     classIndex.value = index;
+    className.value = name;
 }
 </script>
 
@@ -48,6 +49,7 @@ const selectClass = (id, index) => {
         :btnText="btnText"
         :selectedClass="selectedClass" 
         :classIndex="classIndex" 
+        :className="className"
         v-model="dialogOpen"
         @selectClass="selectClass" 
     />

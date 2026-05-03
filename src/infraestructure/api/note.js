@@ -14,4 +14,26 @@ export default class NoteRepository {
             console.error(error);
         }
     }
+
+    async getDetailsNotes(turmaId) {
+        try {
+            const response = await axios.post(`http://localhost:8080/notas/notasDetalhadas`, {
+                turmaId: turmaId,
+            });
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async updateNotes(changes) {
+        try {
+            const response = await axios.post(`http://localhost:8080/notas/atualizarNotas`,
+                changes
+            );
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    }
 }

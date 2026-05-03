@@ -8,6 +8,7 @@ const props = defineProps([
     "btnText",
     "selectedClass",
     "classIndex",
+    "className",
     "modelValue"
 ])
 
@@ -18,24 +19,6 @@ const emits = defineEmits([
 
 const addNotesOpen = ref(false);
 const editNotesOpen = ref(false);
-
-const professorSubjectNames = props.subjects.map(s => s.name)
-
-const professorClasses = props.classes.map(turma => ({
-    ...turma,
-    students: turma.students
-        .filter(student =>
-            student.grid.some(note => 
-                professorSubjectNames.includes(note.disciplina)
-            )
-        )
-        .map(student => ({
-            ...student,
-            grid: student.grid.filter(note => 
-                professorSubjectNames.includes(note.disciplina)
-            )
-        }))
-}))
 
 const closeModal = (isActive) => {
     isActive.value = false;
@@ -85,7 +68,7 @@ const closeModal = (isActive) => {
                         <tr 
                             v-for="(classes, index) in props.classes" 
                                 :key="index"
-                                @click="emits('selectClass', classes.id, index)"
+                                @click="emits('selectClass', classes.id, index, classes.nome)"
                                 :class="classes.id == props.selectedClass ? 'selected-class' : ''"
                             >
                                 <td>{{ classes.id }}</td>
@@ -119,12 +102,14 @@ const closeModal = (isActive) => {
         v-model="addNotesOpen"
         :classIndex="props.classIndex"
         :selectedClass="props.selectedClass"
+        :className="className"
         :professorSubjects="props.subjects"
     />
-    <professor-edit-notes-component 
+    <professor-edit-notes-component v-if="editNotesOpen"
         v-model="editNotesOpen"
         :classIndex="props.classIndex"
-        :classes="professorClasses"
+        :selectedClass="props.selectedClass"
+        :className="className"
         :professorSubjects="props.subjects"
     />    
 </template>
